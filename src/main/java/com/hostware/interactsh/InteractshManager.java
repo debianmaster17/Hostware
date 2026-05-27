@@ -66,7 +66,7 @@ public class InteractshManager {
                 String pubKeyEncoded = Base64.getEncoder()
                         .encodeToString(pubKeyPem.getBytes("UTF-8"));
 
-                String secret = generateCorrelationId(); // independent random secret
+                String secret = generateCorrelationId();
                 String jsonBody = "{\"correlation-id\":\"" + corrId + "\",\"public-key\":\""
                         + pubKeyEncoded + "\",\"secret-key\":\"" + secret + "\"}";
 
@@ -240,7 +240,6 @@ public class InteractshManager {
                 final String fFormatted = formatted;
 
                 SwingUtilities.invokeLater(() -> {
-                    // Split formatted into request and response parts
                     String reqPart = fFormatted;
                     String respPart = "[Interactsh " + fProto + "]";
                     int respIdx = fFormatted.indexOf("--- Raw Response ---");
@@ -321,7 +320,6 @@ public class InteractshManager {
 
             out.append("\n");
 
-            // RAW REQUEST
             if (rawRequest != null && !rawRequest.isEmpty()) {
                 out.append("--- Raw Request ---\n");
                 String fixed = rawRequest
@@ -338,7 +336,6 @@ public class InteractshManager {
                 out.append("\n");
             }
 
-            // RAW RESPONSE
             if (rawResponse != null && !rawResponse.isEmpty()) {
                 out.append("\n--- Raw Response ---\n");
                 String fixed = rawResponse
@@ -355,7 +352,6 @@ public class InteractshManager {
                 out.append("\n");
             }
 
-            // DNS Raw Data
             if (rawData != null && !rawData.isEmpty()) {
                 out.append("\n--- DNS Data ---\n");
                 String fixed = rawData
