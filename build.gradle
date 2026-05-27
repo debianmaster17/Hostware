@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.hostware'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'net.portswigger.burp.extensions:montoya-api:2023.12.1'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': 'Hostware',
+            'Implementation-Version': '1.0.0',
+            'Implementation-Vendor': 'YourName',
+            'Description': 'Integrated exploit server and OOB detection for Burp Suite'
+        )
+    }
+    // Bundle all runtime dependencies
+    from {
+        configurations.runtimeClasspath
+            .collect {
+                it.isDirectory()
+                ? it
+                : zipTree(it)
+            }
+    }
+    duplicatesStrategy =
+        DuplicatesStrategy.EXCLUDE
+}
