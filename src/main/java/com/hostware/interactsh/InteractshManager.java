@@ -66,8 +66,9 @@ public class InteractshManager {
                 String pubKeyEncoded = Base64.getEncoder()
                         .encodeToString(pubKeyPem.getBytes("UTF-8"));
 
+                String secret = generateCorrelationId(); // independent random secret
                 String jsonBody = "{\"correlation-id\":\"" + corrId + "\",\"public-key\":\""
-                        + pubKeyEncoded + "\",\"secret-key\":\"" + corrId + "\"}";
+                        + pubKeyEncoded + "\",\"secret-key\":\"" + secret + "\"}";
 
                 URI uri = new URI("https://" + server + "/register");
                 HttpURLConnection conn = (HttpURLConnection) uri.toURL().openConnection();
@@ -95,7 +96,7 @@ public class InteractshManager {
 
                 String nonce = generateNonce(13);
                 correlationId = corrId;
-                secretKey = corrId;
+                secretKey = secret;
                 generatedPayload = corrId + nonce + "." + server;
 
                 final String payload = generatedPayload;
