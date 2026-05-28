@@ -60,11 +60,8 @@ public class MainTab {
                 outerTabs);
     }
 
-    // Orange pulsing dot on tab title
     private void pulseNotification() {
         SwingUtilities.invokeLater(() -> {
-            // Only pulse Access Log tab
-            // which is index 2
             int logIdx = 2;
             String title =
                     outerTabs.getTitleAt(logIdx);
@@ -114,10 +111,8 @@ public class MainTab {
         textPane.setContentType("text/html");
         textPane.setEditable(false);
         textPane.setOpaque(false);
-        textPane.setFocusable(false);                    // ← Important
-        textPane.setBackground(new Color(0, 0, 0, 0));   // Fully transparent
-
-        // Prevent cursor and focus completely
+        textPane.setFocusable(false);
+        textPane.setBackground(new Color(0, 0, 0, 0));
         textPane.setCursor(null);
         textPane.setHighlighter(null);
 
@@ -151,7 +146,7 @@ public class MainTab {
 
         JScrollPane scrollPane = new JScrollPane(textPane);
         scrollPane.setBorder(null);
-        scrollPane.setFocusable(false);   // Also disable focus on scrollpane
+        scrollPane.setFocusable(false);
 
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;

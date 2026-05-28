@@ -61,7 +61,6 @@ public class LogTab {
             .addListSelectionListener(
                 e -> showDetail());
 
-        // Right click context menu
         logTable.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -93,7 +92,6 @@ public class LogTab {
                 }
             });
 
-        // Row coloring by source
         logTable.setDefaultRenderer(
             Object.class,
             new javax.swing.table

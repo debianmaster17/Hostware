@@ -30,8 +30,6 @@ public class OOBTab {
     private JTextField interactshServerField;
 
     private JLabel statusMsg;
-
-    // Plain string storage independent of UI
     private volatile String storedCollabPayload
         = "";
     private volatile String
@@ -71,13 +69,9 @@ public class OOBTab {
         return panel;
     }
 
-    // Returns stored collab host
-    // without https://
     public String getCollabPayload() {
         return storedCollabPayload;
     }
-
-    // Returns stored interactsh payload
     public String getInteractshPayload() {
         return storedInteractshPayload;
     }
@@ -137,7 +131,6 @@ public class OOBTab {
                     collabManager.generatePayload();
                 if (url != null) {
                     collabField.setText(url);
-                    // Store clean host
                     storedCollabPayload = url
                         .replace("https://", "")
                         .replace("http://", "")
@@ -241,7 +234,6 @@ public class OOBTab {
                 },
                 err -> flash(err, Color.RED),
                 payload -> {
-                    // Store payload immediately
                     storedInteractshPayload =
                         payload;
                     api.logging().logToOutput(
