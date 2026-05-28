@@ -84,7 +84,6 @@ public class CollaboratorManager {
             List<Interaction> interactions =
                 client.getAllInteractions();
 
-            // Reset error count on success
             pollErrorCount = 0;
 
             for (Interaction i : interactions) {
@@ -127,7 +126,7 @@ public class CollaboratorManager {
                             .toString());
                     });
 
-                // Build response detail
+                // Response detail
                 StringBuilder responseDetail =
                     new StringBuilder();
                 responseDetail.append(
