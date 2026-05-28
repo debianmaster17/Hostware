@@ -259,6 +259,19 @@ public class InteractshManager {
         }
     }
 
+    private String prettyHtml(String html) {
+        if (html == null) return "";
+        // Insert newline before every tag
+        return html
+                .replaceAll("<(/)?(html|head|body|div|p|"
+                                + "script|style|title|meta|link|span"
+                                + "|table|tr|td|th|ul|ol|li|form"
+                                + "|input|h[1-6]|br|hr)([^>]*)>",
+                        "\n<$1$2$3>")
+                .replaceAll("\n{2,}", "\n")
+                .trim();
+    }
+
     private String unescapeUnicode(String s) {
         if (s == null) return "";
         StringBuilder sb = new StringBuilder();
@@ -359,6 +372,19 @@ public class InteractshManager {
                         .replace("\\\"", "\"")
                         .replace("\\\\", "\\")
                         .replace("\\t", "\t");
+                int htmlIdx = fixed.toLowerCase()
+                        .indexOf("<html");
+                if (htmlIdx == -1)
+                    htmlIdx = fixed.toLowerCase()
+                            .indexOf("<!doctype");
+                if (htmlIdx != -1) {
+                    String beforeHtml =
+                            fixed.substring(0, htmlIdx);
+                    String htmlPart =
+                            fixed.substring(htmlIdx);
+                    fixed = beforeHtml
+                            + prettyHtml(htmlPart);
+                }
                 out.append(fixed);
                 out.append("\n");
             }
@@ -375,6 +401,19 @@ public class InteractshManager {
                         .replace("\\\"", "\"")
                         .replace("\\\\", "\\")
                         .replace("\\t", "\t");
+                int htmlIdx = fixed.toLowerCase()
+                        .indexOf("<html");
+                if (htmlIdx == -1)
+                    htmlIdx = fixed.toLowerCase()
+                            .indexOf("<!doctype");
+                if (htmlIdx != -1) {
+                    String beforeHtml =
+                            fixed.substring(0, htmlIdx);
+                    String htmlPart =
+                            fixed.substring(htmlIdx);
+                    fixed = beforeHtml
+                            + prettyHtml(htmlPart);
+                }
                 out.append(fixed);
                 out.append("\n");
             }
