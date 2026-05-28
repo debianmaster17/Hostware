@@ -23,7 +23,7 @@ jar {
         attributes(
             'Implementation-Title': 'Hostware',
             'Implementation-Version': '1.0.0',
-            'Implementation-Vendor': 'YourName',
+            'Implementation-Vendor': 'Alpay Ibrahimli',
             'Description': 'Integrated exploit server and OOB detection for Burp Suite'
         )
     }
