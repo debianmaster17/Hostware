@@ -1,6 +1,6 @@
 # Hostware
 
-> **An integrated exploit server and OOB detection platform for Burp Suite.**
+> **Hostware is a Burp Suite extension providing an integrated exploit server and OOB detection platform for web application penetration testing.**
 
 ---
 ## What It Does
