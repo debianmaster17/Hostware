@@ -27,11 +27,15 @@ Hostware gives you a **fully controllable HTTP server inside Burp** — serve an
 - **Open in Browser** — instantly preview your exploit in the default browser
 - **Context menu integration** — right-click any request in Burp → _Send to Exploit Server_
 
+![Exploit Server](assets/screenshot-exploit-server.png)
+
 ### OASTForge (OOB Detection)
 
 - **Burp Collaborator** (Pro) — generate payloads, poll for DNS/HTTP/SMTP interactions, auto-stops after 5 consecutive errors
 - **Interactsh** (free) — full RSA-OAEP + AES-CTR encrypted session, works with `oast.pro` or any self-hosted server
 - Both run **simultaneously** — cover all bases on a single engagement
+
+![OASTForge](assets/screenshot-oastforge.png)
 
 ### Access Log
 
