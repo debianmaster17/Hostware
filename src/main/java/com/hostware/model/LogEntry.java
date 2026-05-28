@@ -35,7 +35,6 @@ public class LogEntry {
         this.port = port;
     }
 
-    // OOB entries have no host/port
     public LogEntry(
         String timestamp,
         String ip,
