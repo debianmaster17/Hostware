@@ -259,6 +259,31 @@ public class InteractshManager {
         }
     }
 
+    private String unescapeUnicode(String s) {
+        if (s == null) return "";
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < s.length()) {
+            if (i + 5 < s.length()
+                    && s.charAt(i) == '\\'
+                    && s.charAt(i + 1) == 'u') {
+                try {
+                    int cp = Integer.parseInt(
+                            s.substring(i + 2, i + 6), 16);
+                    sb.append((char) cp);
+                    i += 6;
+                } catch (NumberFormatException e) {
+                    sb.append(s.charAt(i));
+                    i++;
+                }
+            } else {
+                sb.append(s.charAt(i));
+                i++;
+            }
+        }
+        return sb.toString();
+    }
+
     private String extractJson(String json, String key) {
         try {
             String searchWithSpace = "\"" + key + "\": \"";
@@ -307,8 +332,10 @@ public class InteractshManager {
             String remoteAddr = extractJson(decrypted, "remote-address");
             String timestamp = extractJson(decrypted, "timestamp");
             String qType = extractJson(decrypted, "q-type");
-            String rawRequest = extractJson(decrypted, "raw-request");
-            String rawResponse = extractJson(decrypted, "raw-response");
+            String rawRequest = unescapeUnicode(
+                    extractJson(decrypted, "raw-request"));
+            String rawResponse = unescapeUnicode(
+                    extractJson(decrypted, "raw-response"));
             String rawData = extractJson(decrypted, "raw-data");
             String note = extractJson(decrypted, "note");
 
