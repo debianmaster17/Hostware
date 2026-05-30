@@ -10,29 +10,28 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RequestHandler implements Runnable {
 
     private final Socket client;
     private final MontoyaApi api;
-    private final String configuredPath;
-    private final ExploitSlot activeSlot;
+    private final Function<String, ExploitSlot>
+            slotResolver;
     private final Consumer<LogEntry> onRequest;
     private final String serverHost;
     private final int serverPort;
 
     public RequestHandler(
-        Socket client,
-        MontoyaApi api,
-        String configuredPath,
-        ExploitSlot activeSlot,
-        Consumer<LogEntry> onRequest,
-        String serverHost,
-        int serverPort) {
+            Socket client,
+            MontoyaApi api,
+            Function<String, ExploitSlot> slotResolver,
+            Consumer<LogEntry> onRequest,
+            String serverHost,
+            int serverPort) {
         this.client = client;
         this.api = api;
-        this.configuredPath = configuredPath;
-        this.activeSlot = activeSlot;
+        this.slotResolver = slotResolver;
         this.onRequest = onRequest;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
@@ -44,15 +43,15 @@ public class RequestHandler implements Runnable {
             client.setSoTimeout(30000);
 
             BufferedReader in =
-                new BufferedReader(
-                    new InputStreamReader(
-                        client.getInputStream(),
-                        StandardCharsets.UTF_8));
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    client.getInputStream(),
+                                    StandardCharsets.UTF_8));
             OutputStream out =
-                client.getOutputStream();
+                    client.getOutputStream();
 
             StringBuilder raw =
-                new StringBuilder();
+                    new StringBuilder();
             String line;
             String method = "";
             String path = "";
@@ -61,11 +60,11 @@ public class RequestHandler implements Runnable {
             int contentLength = 0;
 
             while ((line = in.readLine()) != null
-                && !line.isEmpty()) {
+                    && !line.isEmpty()) {
                 raw.append(line).append("\n");
                 if (first) {
                     String[] parts =
-                        line.split(" ");
+                            line.split(" ");
                     if (parts.length >= 2) {
                         method = parts[0];
                         path = parts[1];
@@ -73,20 +72,20 @@ public class RequestHandler implements Runnable {
                     first = false;
                 }
                 if (line.toLowerCase()
-                    .startsWith("user-agent:")) {
+                        .startsWith("user-agent:")) {
                     userAgent =
-                        line.substring(11).trim();
+                            line.substring(11).trim();
                 }
                 if (line.toLowerCase()
-                    .startsWith(
-                        "content-length:")) {
+                        .startsWith(
+                                "content-length:")) {
                     try {
                         contentLength =
-                            Integer.parseInt(
-                                line.substring(15)
-                                .trim());
+                                Integer.parseInt(
+                                        line.substring(15)
+                                                .trim());
                     } catch (
-                        NumberFormatException e) {
+                            NumberFormatException e) {
                         contentLength = 0;
                     }
                 }
@@ -94,87 +93,89 @@ public class RequestHandler implements Runnable {
 
             if (contentLength > 0) {
                 StringBuilder bodyBuilder =
-                    new StringBuilder();
+                        new StringBuilder();
                 int remaining = contentLength;
                 char[] buf = new char[4096];
                 while (remaining > 0) {
                     int read = in.read(
-                        buf, 0,
-                        Math.min(
-                            buf.length,
-                            remaining));
+                            buf, 0,
+                            Math.min(
+                                    buf.length,
+                                    remaining));
                     if (read == -1) break;
                     bodyBuilder.append(
-                        buf, 0, read);
+                            buf, 0, read);
                     remaining -= read;
                 }
                 raw.append("\n")
-                    .append(bodyBuilder
-                        .toString());
+                        .append(bodyBuilder
+                                .toString());
             }
 
             String ip = client.getInetAddress()
-                .getHostAddress();
+                    .getHostAddress();
             String ts =
-                new SimpleDateFormat("HH:mm:ss")
-                .format(new Date());
+                    new SimpleDateFormat("HH:mm:ss")
+                            .format(new Date());
+
+            // Resolve slot by requested path
+            ExploitSlot matched =
+                    slotResolver.apply(path);
 
             String responseStr;
-
-            if (path.equals(configuredPath)
-                || path.equals("/")) {
-                String body = activeSlot.getBody();
+            if (matched != null) {
+                String body = matched.getBody();
                 String head =
-                    activeSlot.getHead().trim();
+                        matched.getHead().trim();
                 String[] headLines =
-                    head.split("\r\n|\n");
+                        head.split("\r\n|\n");
                 String statusLine = headLines[0];
 
                 StringBuilder headers =
-                    new StringBuilder();
+                        new StringBuilder();
                 for (int i = 1;
-                    i < headLines.length; i++) {
+                     i < headLines.length; i++) {
                     if (!headLines[i].trim()
-                        .isEmpty()) {
+                            .isEmpty()) {
                         headers.append(
-                            headLines[i].trim())
-                            .append("\r\n");
+                                        headLines[i].trim())
+                                .append("\r\n");
                     }
                 }
                 headers.append("Content-Length: ")
-                    .append(
-                        body.getBytes(
-                            StandardCharsets.UTF_8)
-                        .length)
-                    .append("\r\n");
+                        .append(
+                                body.getBytes(
+                                        StandardCharsets.UTF_8)
+                                        .length)
+                        .append("\r\n");
 
                 responseStr = statusLine + "\r\n"
-                    + headers.toString()
-                    + "\r\n" + body;
+                        + headers.toString()
+                        + "\r\n" + body;
             } else {
                 responseStr =
-                    "HTTP/1.1 404 Not Found\r\n"
-                    + "Connection: close\r\n\r\n"
-                    + "Not Found";
+                        "HTTP/1.1 404 Not Found\r\n"
+                                + "Connection: close\r\n\r\n"
+                                + "Not Found";
             }
 
             out.write(responseStr.getBytes(
-                StandardCharsets.UTF_8));
+                    StandardCharsets.UTF_8));
             out.flush();
             client.close();
 
             LogEntry entry = new LogEntry(
-                ts, ip, method, path,
-                userAgent, "Local",
-                raw.toString(), responseStr,
-                serverHost, serverPort);
+                    ts, ip, method, path,
+                    userAgent, "Local",
+                    raw.toString(), responseStr,
+                    serverHost, serverPort);
 
             onRequest.accept(entry);
 
         } catch (IOException e) {
             api.logging().logToError(
-                "Request error: "
-                + e.getMessage());
+                    "Request error: "
+                            + e.getMessage());
         }
     }
 }
