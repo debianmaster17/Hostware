@@ -7,13 +7,6 @@
 
 Hostware gives you a **fully controllable HTTP server inside Burp** — serve any payload, capture every request, and detect blind out-of-band callbacks, all without leaving the suite.
 
-| Problem                                        | Hostware                                   |
-| ---------------------------------------------- | ------------------------------------------ |
-| Need a quick exploit server for XSS/CSRF?      | Built-in, one click                        |
-| Testing SSRF but have no VPS right now?        | ngrok + local mode                         |
-| Blind OOB injection with no Burp Pro?          | Interactsh built in                        |
-| Want to see exactly what the target sent back? | Live access log with full request/response |
-
 ---
 ## Features
 
