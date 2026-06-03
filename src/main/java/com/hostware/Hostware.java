@@ -74,41 +74,40 @@ public class Hostware implements BurpExtension {
         JMenuItem sendExploit = new JMenuItem(
             "Send to Exploit Server");
         sendExploit.addActionListener(e -> {
+            final boolean[] sent = {false};
             event.messageEditorRequestResponse()
-                .ifPresent(editor -> {
-                    try {
-                        String raw = new String(
-                            editor.requestResponse()
-                            .request()
-                            .toByteArray()
-                            .getBytes());
-                        mainTab
-                            .sendToExploitServer(
-                                raw);
-                    } catch (Exception ex) {
-                        api.logging().logToError(
-                            "Send to exploit: "
-                            + ex.getMessage());
-                    }
-                });
+                    .ifPresent(editor -> {
+                        try {
+                            String raw = new String(
+                                    editor.requestResponse()
+                                            .request()
+                                            .toByteArray()
+                                            .getBytes());
+                            mainTab.sendToExploitServer(raw);
+                            sent[0] = true;
+                        } catch (Exception ex) {
+                            api.logging().logToError(
+                                    "Send to exploit: "
+                                            + ex.getMessage());
+                        }
+                    });
 
-            if (!event
-                .selectedRequestResponses()
-                .isEmpty()) {
+            if (!sent[0] && !event
+                    .selectedRequestResponses()
+                    .isEmpty()) {
                 try {
                     String raw = new String(
-                        event
-                        .selectedRequestResponses()
-                        .get(0)
-                        .request()
-                        .toByteArray()
-                        .getBytes());
-                    mainTab
-                        .sendToExploitServer(raw);
+                            event
+                                    .selectedRequestResponses()
+                                    .get(0)
+                                    .request()
+                                    .toByteArray()
+                                    .getBytes());
+                    mainTab.sendToExploitServer(raw);
                 } catch (Exception ex) {
                     api.logging().logToError(
-                        "Send to exploit: "
-                        + ex.getMessage());
+                            "Send to exploit: "
+                                    + ex.getMessage());
                 }
             }
         });

@@ -51,6 +51,12 @@ public class InteractshManager {
     }
 
     public void register() {
+        if (active) {
+            SwingUtilities.invokeLater(() ->
+                    onError.accept(
+                            "Stop polling before re-registering."));
+            return;
+        }
         new Thread(() -> {
             try {
                 KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
