@@ -35,7 +35,8 @@ Hostware gives you a **fully controllable HTTP server inside Burp** — serve an
 - Live table of every inbound request — timestamp, IP, method, path, user-agent, source
 - Click any row to view the **full raw request and response**
 - **Export to CSV** for reporting
-- Tab pulses orange on new activity so you never miss a hit
+
+![OASTForge](assets/screenshot-access-log.png)
 
 ### General
 

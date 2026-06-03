@@ -70,7 +70,7 @@ public class Hostware implements BurpExtension {
         JMenu hostwareMenu =
             new JMenu("Hostware");
 
-        // ── Send to Exploit Server ──
+        // Send to Exploit Server
         JMenuItem sendExploit = new JMenuItem(
             "Send to Exploit Server");
         sendExploit.addActionListener(e -> {
