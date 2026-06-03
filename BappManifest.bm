@@ -1,0 +1,11 @@
+ComponentVersion: 1.0.0
+EntryPointSize: build/libs/hostware-1.0.0.jar
+RepoName: Hostware
+RepoUUID: 
+ExtensionType: 1
+Name: Hostware
+ShortDescription: An integrated exploit server and OOB detection platform for Burp Suite.
+LongDescription: Hostware gives you a fully controllable HTTP server inside Burp — serve any payload, capture every request, and detect blind out-of-band callbacks, all without leaving the suite.
+Author: Alpay Ibrahimli
+Platforms: All
+BuildCommand: ./gradlew jar
